@@ -10,7 +10,7 @@ const routes = express.Router();
 
 routes.post("/session", SessionController.create)
 
-routes.post("/profile/", ProfileController.list)
+routes.get("/profile/", ProfileController.list)
 
 routes.post("/ongs", OngsControlle.list)
 routes.post("/ong/create", OngsControlle.create)
