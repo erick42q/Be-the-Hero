@@ -44,7 +44,19 @@ export default StyleSheet.create({
         fontWeight: 'bold'
     },
     incidentValue:{
-        
+        marginTop: 8,
+        fontSize: 15,
+        marginBottom: 24,
+        color: '#737315'
+    },
+    detailsButton: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    detailsButtonText: {
+        color: '#E02041',
+        fontSize: 15,
+        fontWeight: 'bold',
     }
-
 })
