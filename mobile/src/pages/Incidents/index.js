@@ -1,6 +1,7 @@
 import React from 'react'
 import { Feather } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
+import * as MailComposer from 'expo-mail-composer'
 import { View, FlatList, Image, Text, TouchableOpacity } from 'react-native'
 
 
@@ -10,11 +11,23 @@ import styles from './styles'
 
 export default function Incidents() {
     const navigation = useNavigation()
+    const message = 'Olá Ong Name, estou entrando em contato pois gostaria de ajudar no caso "cadelinha atropelada" com o valor de R$120,00'
 
     function navigateToDetail(){
         navigation.navigate('Detail')
     }
 
+    function sendMail(){
+        MailComposer.composeAsync({
+            subject: 'Heroi do caso: asdf asdf',
+            recipients: ['erickq.faria@gmail.com'],
+            body: message
+        })
+    }
+
+    function sendWhatsapp(){
+
+    }
 
     return (
         <View style={styles.container}>
