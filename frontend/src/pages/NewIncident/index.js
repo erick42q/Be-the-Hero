@@ -32,7 +32,7 @@ export default function NewIncident() {
                     authorization: ongId,
                 },
             })
-            history.push('/profile')
+            history.push('/profile') 
         }catch(err){
             alert(`erro ao criar incident: ${err}`)
         }
