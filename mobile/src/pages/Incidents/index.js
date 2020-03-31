@@ -1,40 +1,55 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Feather } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
-import * as MailComposer from 'expo-mail-composer'
 import { View, FlatList, Image, Text, TouchableOpacity } from 'react-native'
 
 
 import logoImg from '../../assets/logo.png'
 
 import styles from './styles'
+import api from '../../services/api'
 
 export default function Incidents() {
+    const [incidents, setIncidents] = useState([])
+    const [total, setTotal] = useState(0)
     const navigation = useNavigation()
-    const message = 'Olá Ong Name, estou entrando em contato pois gostaria de ajudar no caso "cadelinha atropelada" com o valor de R$120,00'
+    const [page, setPage] = useState(1)
+    const [loading, setLoading] = useState(false)
 
-    function navigateToDetail(){
-        navigation.navigate('Detail')
+    function navigateToDetail(incident) {
+        navigation.navigate('Detail', {incident})
     }
 
-    function sendMail(){
-        MailComposer.composeAsync({
-            subject: 'Heroi do caso: asdf asdf',
-            recipients: ['erickq.faria@gmail.com'],
-            body: message
+    async function loadIncidents() {
+        if (loading){
+            return
+        }
+        if (total > 0 && incidents.length === total){
+            return
+        }
+
+        setLoading(true)
+
+        const response = await api.get(`incidents`, {
+            params: { page }
         })
+
+        setIncidents([...incidents, ...response.data])
+        setTotal(response.headers["x-total-count"])
+        setPage(page+1)
+        setLoading(false)
     }
 
-    function sendWhatsapp(){
-
-    }
+    useEffect(() => {
+        loadIncidents()
+    }, [])
 
     return (
         <View style={styles.container}>
             <View style={styles.header}>
                 <Image source={logoImg} />
                 <Text style={styles.headerText}>
-                    Total de 0 casos
+                    Total de {total} casos
                 </Text>
             </View>
 
@@ -43,24 +58,30 @@ export default function Incidents() {
 
 
             <FlatList
-                data={[1, 2, 3]}
+                data={incidents}
                 style={styles.incidentsList}
-                keyExtractor={incident => String(incident)}
+                keyExtractor={incident => String(incident.id)}
                 showsVerticalScrollIndicator={false}
-                renderItem={() => (
+                onEndReachedThreshold={0.2}
+                renderItem={({ item: incident }) => (
                     <View style={styles.incident}>
                         <Text style={styles.incidentProperty}>Ong: </Text>
-                        <Text style={styles.incidentValue}>OngName</Text>
+                        <Text style={styles.incidentValue}>{incident.name}</Text>
 
                         <Text style={styles.incidentProperty}>Caso: </Text>
-                        <Text style={styles.incidentValue}>Description of incident</Text>
+                        <Text style={styles.incidentValue}>{incident.description}</Text>
 
                         <Text style={styles.incidentProperty}>Valor: </Text>
-                        <Text style={styles.incidentValue}>R$ 100,00</Text>
+                        <Text style={styles.incidentValue}>
+                            {Intl.NumberFormat('pt-BR', {
+                                style: "currency",
+                                currency: 'BRL'
+                            }).format(incident.value)}
+                        </Text>
 
                         <TouchableOpacity
                             style={styles.detailsButton}
-                            onPress={navigateToDetail}
+                            onPress={() => navigateToDetail(incident)}
                         >
                             <Text style={styles.detailsButtonText}>View more...</Text>
                             <Feather name='arrow-right' size={16} color="#E02041" />

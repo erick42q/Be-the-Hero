@@ -1,6 +1,6 @@
 import React from 'react'
 import { Feather } from '@expo/vector-icons'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useRoute } from '@react-navigation/native'
 import { View, Image, TouchableOpacity, Text, Linking } from 'react-native'
 import * as MailComposer from 'expo-mail-composer'
 
@@ -9,24 +9,28 @@ import logoImg from '../../assets/logo.png'
 import styles from './style.js'
 
 export default function Detail() {
-    const message = 'Olá Ong Name, estou entrando em contato pois gostaria de ajudar no caso "cadelinha atropelada" com o valor de R$120,00'
     const navigation = useNavigation()
+    const route = useRoute()
 
-    function navigateToIncidents(){
+    const incident = route.params.incident
+    const message = `Olá ${incident.name}, estou entrando em contato pois gostaria de ajudar no caso ${incident.title} com o valor de ${incident.value}`
+
+    function navigateToIncidents() {
         navigation.goBack()
     }
 
-    function sendMail(){
+    function sendMail() {
         MailComposer.composeAsync({
-            subject: 'Heroi do caso: asdf asdf',
-            recipients: ['erickq.faria@gmail.com'],
+            subject: `herói do caso: ${incident.title}`,
+            recipients: ['erickq.faria@gmail.com', incident.email],
             body: message
         })
     }
 
-    function sendWhatsapp(){
-        Linking.openURL(`whatsapp://send?phone=5561981786774&&text=${message}`)
+    function sendWhatsapp() {
+        Linking.openURL(`whatsapp://send?phone=55${incident.whatsapp}&&text=${message}`)
     }
+
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -35,17 +39,22 @@ export default function Detail() {
                     <Feather name="arrow-left" size={28} color='#E82041' />
                 </TouchableOpacity>
             </View>
-                <View style={styles.incident}>
-                    <Text style={[styles.incidentProperty, {marginTop: 0}]}>Ong: </Text>
-                    <Text style={styles.incidentValue}>OngName</Text>
+            <View style={styles.incident}>
+                <Text style={[styles.incidentProperty, { marginTop: 0 }]}>Ong: </Text>
+                <Text style={styles.incidentValue}>{incident.title} de {incident.city}/{incident.uf}</Text>
 
-                    <Text style={styles.incidentProperty}>Caso: </Text>
-                    <Text style={styles.incidentValue}>Description of incident</Text>
+                <Text style={styles.incidentProperty}>Caso: </Text>
+                <Text style={styles.incidentValue}>{incident.description}</Text>
 
-                    <Text style={styles.incidentProperty}>Valor: </Text>
-                    <Text style={styles.incidentValue}>R$ 100,00</Text>
+                <Text style={styles.incidentProperty}>Valor: </Text>
+                <Text style={styles.incidentValue}>
+                    {Intl.NumberFormat('pt-BR', {
+                        style: "currency",
+                        currency: 'BRL'
+                    }).format(incident.value)}
+                </Text>
             </View>
-            <View style={styles.contactBox}> 
+            <View style={styles.contactBox}>
                 <Text style={styles.heroTitle}>Salve o dia!</Text>
                 <Text style={styles.heroTitle}>Seja o herói desse caso.</Text>
 
