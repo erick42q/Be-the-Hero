@@ -43,7 +43,7 @@ export default function NewIncident() {
         <div className="new_incident-container">
             <div className="content">
                 <section>
-                    <img src={logoImg} alt="I Help" />
+                    <img src={logoImg} alt="Be The Hero" />
 
                     <h1>Cadastrar novo caso</h1>
                     <p>Descreva o caso detalhadamente para enctontrar um herói para resolver isso</p>
