@@ -23,6 +23,7 @@ routes.post("/ong/create", celebrate({
         name: Joi.string().required(),
         email: Joi.string().email().required(),
         whatsapp: Joi.string().required().min(10).max(11),
+        city: Joi.string().required(),
         uf: Joi.string().length(2).required(),
     })
 }), OngsControlle.create)

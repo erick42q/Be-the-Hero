@@ -1,4 +1,4 @@
-const crypto = require("crypto")
+const geterateUniqueId = require("../utils/geterateUniqueId")
 const connect = require("../database/connection")
 
 
@@ -11,16 +11,19 @@ list = async (request, response) => {
 create = async (request, response) => {
     const { name, email, whatsapp, city, uf } = request.body
 
-    const id = crypto.randomBytes(4).toString('HEX')
+    const id = geterateUniqueId()
 
     await connect('ongs').insert({ 
-        id, name, email, whatsapp, city, uf 
+        id,
+        name,
+        email,
+        whatsapp,
+        city,
+        uf 
     })
 
-    console.log(id)
-
     response.json({
-        id, name
+        id
     })
 }
 
